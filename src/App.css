@@ -112,6 +112,7 @@ body { min-width: 320px; background: #dfe3df; }
 .center-screen h1 { margin: 0 0 12px; font-family: "Yu Mincho", serif; font-size: 26px; }
 .center-screen p { max-width: 320px; margin: 0; color: var(--muted); font-size: 12px; line-height: 1.75; }
 .center-screen code { margin-top: 20px; padding: 9px; border-radius: 8px; color: #4e5752; background: #e8e5dc; font-size: 9px; }
+.demo-link { margin-top: 18px; color: var(--accent); font-size: 12px; font-weight: 800; }
 .spinner { width: 28px; height: 28px; margin-bottom: 17px; border: 3px solid #d7d5ce; border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; }
 .center-screen .primary-button, .center-screen .secondary-button { max-width: 280px; }
 

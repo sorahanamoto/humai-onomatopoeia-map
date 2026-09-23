@@ -110,7 +110,7 @@ create policy "Users can read their own consent history" on public.consent_accep
 create policy "Users can accept consent for themselves" on public.consent_acceptances for insert to authenticated with check (
   user_id = auth.uid() and exists (select 1 from public.consent_versions where consent_versions.id = consent_version_id and consent_versions.is_active = true)
 );
-create policy "Users can read their own records" on public.onomatopoeia_records for select to authenticated using (user_id = auth.uid());
+create policy "Authenticated users can read all records" on public.onomatopoeia_records for select to authenticated using (true);
 create policy "Users can create their own consented records" on public.onomatopoeia_records for insert to authenticated with check (
   user_id = auth.uid()
   and (project_id is null or exists (

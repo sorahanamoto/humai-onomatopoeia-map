@@ -12,6 +12,7 @@ import type {
 import './App.css'
 
 function App() {
+  const demoMode = new URLSearchParams(window.location.search).has('demo')
   const [session, setSession] = useState<Session | null>(null)
   const [authLoading, setAuthLoading] = useState(true)
   const [accountLoading, setAccountLoading] = useState(false)
@@ -83,7 +84,6 @@ function App() {
     const recordsResult = await supabase
       .from('onomatopoeia_records')
       .select('id, onomatopoeia, description, latitude, longitude, accuracy_m, photo_path, recorded_at')
-      .eq('user_id', session.user.id)
       .order('recorded_at', { ascending: false })
       .limit(200)
 
@@ -97,6 +97,7 @@ function App() {
     void loadAccount()
   }, [loadAccount])
 
+  if (demoMode) return <DemoMap />
   if (!isSupabaseConfigured) return <SetupRequired />
   if (authLoading) return <LoadingScreen message="アプリを準備しています" />
   if (!session) return <AuthScreen />
@@ -308,15 +309,16 @@ function ConsentScreen({ consent, userId, onAccepted }: {
   )
 }
 
-function MapScreen({ session, acceptance, membership, records, onCreated }: {
+function MapScreen({ session, acceptance, membership, records, onCreated, demoMode = false }: {
   session: Session
   acceptance: ConsentAcceptance
   membership: ProjectMembership | null
   records: OnomatopoeiaRecord[]
   onCreated: (record: OnomatopoeiaRecord) => void
+  demoMode?: boolean
 }) {
-  const [coordinates, setCoordinates] = useState<Coordinates | null>(null)
-  const [locationStatus, setLocationStatus] = useState<'loading' | 'ready' | 'error'>('loading')
+  const [coordinates, setCoordinates] = useState<Coordinates | null>(demoMode ? { latitude: 35.6812, longitude: 139.7671, accuracy: 12 } : null)
+  const [locationStatus, setLocationStatus] = useState<'loading' | 'ready' | 'error'>(demoMode ? 'ready' : 'loading')
   const [sheetOpen, setSheetOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -336,7 +338,9 @@ function MapScreen({ session, acceptance, membership, records, onCreated }: {
     )
   }, [])
 
-  useEffect(() => locate(), [locate])
+  useEffect(() => {
+    if (!demoMode) locate()
+  }, [demoMode, locate])
 
   return (
     <main className="map-page">
@@ -347,7 +351,7 @@ function MapScreen({ session, acceptance, membership, records, onCreated }: {
           <div className="account-menu">
             <small>{session.user.email}</small>
             {membership?.projects?.name && <span>{membership.projects.name}</span>}
-            <button onClick={() => supabase?.auth.signOut()}>ログアウト</button>
+            {!demoMode && <button onClick={() => supabase?.auth.signOut()}>ログアウト</button>}
           </div>
         )}
       </header>
@@ -365,6 +369,7 @@ function MapScreen({ session, acceptance, membership, records, onCreated }: {
           userId={session.user.id}
           acceptanceId={acceptance.id}
           projectId={membership?.project_id ?? null}
+          demoMode={demoMode}
           onClose={() => setSheetOpen(false)}
           onCreated={(record) => {
             onCreated(record)
@@ -376,13 +381,14 @@ function MapScreen({ session, acceptance, membership, records, onCreated }: {
   )
 }
 
-function RecordSheet({ coordinates, userId, acceptanceId, projectId, onClose, onCreated }: {
+function RecordSheet({ coordinates, userId, acceptanceId, projectId, onClose, onCreated, demoMode = false }: {
   coordinates: Coordinates
   userId: string
   acceptanceId: string
   projectId: string | null
   onClose: () => void
   onCreated: (record: OnomatopoeiaRecord) => void
+  demoMode?: boolean
 }) {
   const [onomatopoeia, setOnomatopoeia] = useState('')
   const [description, setDescription] = useState('')
@@ -394,7 +400,21 @@ function RecordSheet({ coordinates, userId, acceptanceId, projectId, onClose, on
   useEffect(() => () => { if (previewUrl) URL.revokeObjectURL(previewUrl) }, [previewUrl])
 
   async function save() {
-    if (!supabase || !onomatopoeia.trim()) return
+    if (!onomatopoeia.trim()) return
+    if (demoMode) {
+      onCreated({
+        id: crypto.randomUUID(),
+        onomatopoeia: onomatopoeia.trim(),
+        description: description.trim() || null,
+        latitude: coordinates.latitude,
+        longitude: coordinates.longitude,
+        accuracy_m: coordinates.accuracy,
+        photo_path: null,
+        recorded_at: new Date().toISOString(),
+      })
+      return
+    }
+    if (!supabase) return
     setLoading(true)
     setError('')
     let photoPath: string | null = null
@@ -502,7 +522,19 @@ function ConsentMissing({ signOut }: { signOut: () => void }) {
 }
 
 function SetupRequired() {
-  return <main className="center-screen"><Brand /><h1>セットアップが必要です</h1><p>Supabaseの環境変数を設定するとアプリを利用できます。</p><code>VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY</code></main>
+  return <main className="center-screen"><Brand /><h1>セットアップが必要です</h1><p>Supabaseの環境変数を設定するとアプリを利用できます。</p><code>VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY</code><a className="demo-link" href="?demo=1">デモ画面を確認する</a></main>
+}
+
+const demoRecords: OnomatopoeiaRecord[] = [
+  { id: 'demo-1', onomatopoeia: 'ざわざわ', description: '駅前を行き交う人の声', latitude: 35.6821, longitude: 139.7661, accuracy_m: 10, photo_path: null, recorded_at: new Date().toISOString() },
+  { id: 'demo-2', onomatopoeia: 'カタン', description: '線路から聞こえた音', latitude: 35.6799, longitude: 139.7692, accuracy_m: 14, photo_path: null, recorded_at: new Date().toISOString() },
+  { id: 'demo-3', onomatopoeia: 'さらさら', description: '街路樹の葉が揺れる音', latitude: 35.6831, longitude: 139.7702, accuracy_m: 9, photo_path: null, recorded_at: new Date().toISOString() },
+]
+
+function DemoMap() {
+  const [records, setRecords] = useState(demoRecords)
+  const session = { user: { id: 'demo-user', email: 'demo@humai.local' } } as Session
+  return <MapScreen session={session} acceptance={{ id: 'demo-consent', consent_version_id: 'demo', accepted_at: new Date().toISOString() }} membership={{ project_id: 'demo-project', projects: { name: 'HUMAI デモ' } }} records={records} onCreated={(record) => setRecords((current) => [record, ...current])} demoMode />
 }
 
 async function compressImage(file: File): Promise<Blob> {
