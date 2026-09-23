@@ -33,7 +33,7 @@ body { min-width: 320px; background: #dfe3df; }
 .auth-intro { margin: 11vh 4px 40px; }
 .eyebrow { margin: 0 0 12px; color: rgba(255,255,255,.48); font-size: 9px; font-weight: 800; letter-spacing: .18em; }
 .eyebrow.accent { color: var(--accent); }
-.auth-intro h1 { margin: 0; font-family: "Yu Mincho", "Hiragino Mincho ProN", serif; font-size: clamp(37px, 11vw, 51px); line-height: 1.3; letter-spacing: -.05em; font-weight: 600; }
+.auth-intro h1 { margin: 0; font-family: inherit; font-size: clamp(37px, 11vw, 51px); line-height: 1.3; letter-spacing: -.05em; font-weight: 700; }
 .auth-intro > p:last-child { margin: 17px 0 0; color: rgba(255,255,255,.6); font-size: 12px; }
 
 .auth-card { margin-top: auto; padding: 24px 20px 20px; border-radius: 24px; color: var(--ink); background: var(--surface); }
@@ -62,7 +62,7 @@ body { min-width: 320px; background: #dfe3df; }
 .simple-header { height: calc(58px + env(safe-area-inset-top)); padding: calc(15px + env(safe-area-inset-top)) 18px 10px; border-bottom: 1px solid var(--line); background: var(--surface); }
 .consent-page { display: flex; flex-direction: column; background: #f8f6ef; }
 .consent-content { flex: 1; min-height: 0; padding: 26px 20px 18px; overflow-y: auto; }
-.consent-content h1 { margin: 0 0 18px; font-family: "Yu Mincho", serif; font-size: 28px; }
+.consent-content h1 { margin: 0 0 18px; font-family: inherit; font-size: 28px; }
 .consent-document { padding: 18px; border: 1px solid #e3e0d8; border-radius: 15px; background: #fff; color: #4e5752; font-size: 11px; line-height: 1.85; }
 .consent-document p { margin: 0 0 12px; }
 .consent-document p:last-child { margin-bottom: 0; }
@@ -85,9 +85,9 @@ body { min-width: 320px; background: #dfe3df; }
 .map { position: absolute; inset: 0; }
 .maplibregl-ctrl-bottom-right { bottom: calc(83px + env(safe-area-inset-bottom)); }
 .current-location-marker { width: 22px; height: 22px; border: 4px solid white; border-radius: 50%; background: #1975d2; box-shadow: 0 0 0 13px rgba(25,117,210,.2), 0 3px 10px rgba(0,0,0,.22); }
-.onomatopoeia-marker { padding: 7px 10px; border: 2px solid #fff; border-radius: 999px; color: #fff; background: var(--accent); box-shadow: 0 5px 12px rgba(23,34,30,.2); font-family: "Yu Mincho", serif; font-size: 10px; font-weight: 800; cursor: pointer; }
+.onomatopoeia-marker { padding: 7px 10px; border: 2px solid #fff; border-radius: 999px; color: #fff; background: var(--accent); box-shadow: 0 5px 12px rgba(23,34,30,.2); font-family: inherit; font-size: 10px; font-weight: 800; cursor: pointer; }
 .maplibregl-popup-content { padding: 12px; border-radius: 10px; font-size: 11px; }
-.maplibregl-popup-content strong { color: var(--accent); font-family: "Yu Mincho", serif; font-size: 16px; }
+.maplibregl-popup-content strong { color: var(--accent); font-family: inherit; font-size: 16px; }
 .maplibregl-popup-content p { margin: 6px 0 0; color: var(--muted); }
 .locate-button { position: absolute; z-index: 10; left: 14px; bottom: calc(88px + env(safe-area-inset-bottom)); width: 44px; height: 44px; border: 0; border-radius: 50%; background: #fff; box-shadow: 0 4px 14px rgba(23,34,30,.18); font-size: 22px; cursor: pointer; }
 .location-status { position: absolute; z-index: 10; top: calc(70px + env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); padding: 7px 10px; border-radius: 999px; white-space: nowrap; color: #276e54; background: rgba(232,246,238,.94); font-size: 9px; box-shadow: 0 3px 12px rgba(23,34,30,.08); }
@@ -101,15 +101,15 @@ body { min-width: 320px; background: #dfe3df; }
 .sheet-handle { width: 42px; height: 4px; margin: 0 auto 17px; border-radius: 4px; background: #d0cec8; }
 .close-button { position: absolute; top: 13px; right: 14px; width: 31px; height: 31px; border: 0; border-radius: 50%; color: var(--muted); background: #efede8; font-size: 19px; cursor: pointer; }
 .record-sheet > p { margin: 0; color: var(--muted); font-size: 10px; }
-.record-sheet h2 { margin: 3px 0 16px; font-family: "Yu Mincho", serif; font-size: 24px; }
-.onomatopoeia-input { height: 55px !important; font-family: "Yu Mincho", serif; font-size: 19px !important; font-weight: 800; }
+.record-sheet h2 { margin: 3px 0 16px; font-family: inherit; font-size: 24px; }
+.onomatopoeia-input { height: 55px !important; font-family: inherit; font-size: 19px !important; font-weight: 800; }
 .photo-picker { min-height: 54px; margin-top: 16px; padding: 7px 12px; display: flex; align-items: center; justify-content: center; gap: 9px; border: 1px dashed #cbc8bf; border-radius: 11px; color: #626b65; font-size: 10px; cursor: pointer; overflow: hidden; }
 .photo-picker input { position: absolute; width: 1px; height: 1px; overflow: hidden; opacity: 0; }
 .photo-picker img { width: 44px; height: 44px; border-radius: 8px; object-fit: cover; }
 
 .center-screen { padding: 26px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
 .center-screen .brand { position: absolute; top: calc(20px + env(safe-area-inset-top)); left: 20px; }
-.center-screen h1 { margin: 0 0 12px; font-family: "Yu Mincho", serif; font-size: 26px; }
+.center-screen h1 { margin: 0 0 12px; font-family: inherit; font-size: 26px; }
 .center-screen p { max-width: 320px; margin: 0; color: var(--muted); font-size: 12px; line-height: 1.75; }
 .center-screen code { margin-top: 20px; padding: 9px; border-radius: 8px; color: #4e5752; background: #e8e5dc; font-size: 9px; }
 .demo-link { margin-top: 18px; color: var(--accent); font-size: 12px; font-weight: 800; }

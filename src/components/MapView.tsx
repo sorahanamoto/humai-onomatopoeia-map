@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import * as maplibregl from 'maplibre-gl'
-import { setWorkerUrl, type Map as MapLibreMap, type Marker } from 'maplibre-gl'
+import { setWorkerUrl, type Map as MapLibreMap, type Marker, type StyleSpecification } from 'maplibre-gl'
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import type { Coordinates, OnomatopoeiaRecord } from '../types'
@@ -11,10 +11,26 @@ type Props = {
 }
 
 const mapTilerKey = import.meta.env.VITE_MAPTILER_KEY?.trim()
+const osmTileUrl = import.meta.env.DEV
+  ? '/osm-tiles/{z}/{x}/{y}.png'
+  : 'https://tile.openstreetmap.jp/styles/osm-bright-ja/{z}/{x}/{y}.png'
 setWorkerUrl(workerUrl)
-const styleUrl = mapTilerKey
+const fallbackStyle: StyleSpecification = {
+  version: 8,
+  sources: {
+    osmJapan: {
+      type: 'raster',
+      tiles: [osmTileUrl],
+      tileSize: 256,
+      attribution: '© OpenStreetMap contributors',
+    },
+  },
+  layers: [{ id: 'osm-japan', type: 'raster', source: 'osmJapan' }],
+}
+
+const mapStyle = mapTilerKey
   ? `https://api.maptiler.com/maps/streets-v2/style.json?key=${mapTilerKey}`
-  : 'https://demotiles.maplibre.org/style.json'
+  : fallbackStyle
 
 export function MapView({ coordinates, records }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -27,7 +43,7 @@ export function MapView({ coordinates, records }: Props) {
 
     const map = new maplibregl.Map({
       container: containerRef.current,
-      style: styleUrl,
+      style: mapStyle,
       center: [139.7671, 35.6812],
       zoom: 14,
       attributionControl: false,
