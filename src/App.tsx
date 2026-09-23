@@ -97,7 +97,7 @@ function App() {
     void loadAccount()
   }, [loadAccount])
 
-  if (demoMode) return <DemoMap />
+  if (demoMode) return <DemoExperience />
   if (!isSupabaseConfigured) return <SetupRequired />
   if (authLoading) return <LoadingScreen message="アプリを準備しています" />
   if (!session) return <AuthScreen />
@@ -134,7 +134,10 @@ function Brand() {
   )
 }
 
-function AuthScreen() {
+function AuthScreen({ demoMode = false, onDemoAuthenticated }: {
+  demoMode?: boolean
+  onDemoAuthenticated?: (email: string, projectCode: string) => void
+} = {}) {
   const [email, setEmail] = useState('')
   const [projectCode, setProjectCode] = useState('')
   const [otp, setOtp] = useState('')
@@ -143,9 +146,16 @@ function AuthScreen() {
   const [error, setError] = useState('')
 
   async function sendOtp() {
-    if (!supabase || !email.trim()) return
+    if (!email.trim()) return
     setLoading(true)
     setError('')
+    if (demoMode) {
+      await new Promise((resolve) => window.setTimeout(resolve, 350))
+      setLoading(false)
+      setStage('otp')
+      return
+    }
+    if (!supabase) return
     const { error: authError } = await supabase.auth.signInWithOtp({
       email: email.trim(),
       options: { shouldCreateUser: true },
@@ -159,9 +169,21 @@ function AuthScreen() {
   }
 
   async function verifyOtp() {
-    if (!supabase || otp.trim().length !== 6) return
+    if (otp.trim().length !== 6) return
     setLoading(true)
     setError('')
+    if (demoMode) {
+      await new Promise((resolve) => window.setTimeout(resolve, 350))
+      if (otp !== '123456') {
+        setLoading(false)
+        setError('デモの確認コードは 123456 です。')
+        return
+      }
+      setLoading(false)
+      onDemoAuthenticated?.(email.trim(), projectCode.trim())
+      return
+    }
+    if (!supabase) return
     const { data, error: authError } = await supabase.auth.verifyOtp({
       email: email.trim(),
       token: otp.trim(),
@@ -233,6 +255,7 @@ function AuthScreen() {
             <button className="text-button" onClick={() => setStage('email')}>← メールアドレスを変更</button>
             <h2>確認コードを入力</h2>
             <p className="card-copy">{email} に届いた6桁のコードを入力してください。</p>
+            {demoMode && <p className="demo-code">デモ確認コード：<strong>123456</strong></p>}
             <Field label="確認コード">
               <input
                 className="otp-input"
@@ -255,18 +278,25 @@ function AuthScreen() {
   )
 }
 
-function ConsentScreen({ consent, userId, onAccepted }: {
+function ConsentScreen({ consent, userId, onAccepted, demoMode = false }: {
   consent: ConsentVersion
   userId: string
   onAccepted: (acceptance: ConsentAcceptance) => void
+  demoMode?: boolean
 }) {
   const [checked, setChecked] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
   async function accept() {
-    if (!supabase || !checked) return
+    if (!checked) return
     setLoading(true)
+    if (demoMode) {
+      await new Promise((resolve) => window.setTimeout(resolve, 350))
+      onAccepted({ id: 'demo-consent', consent_version_id: consent.id, accepted_at: new Date().toISOString() })
+      return
+    }
+    if (!supabase) return
     const { data, error: insertError } = await supabase
       .from('consent_acceptances')
       .insert({
@@ -531,10 +561,32 @@ const demoRecords: OnomatopoeiaRecord[] = [
   { id: 'demo-3', onomatopoeia: 'さらさら', description: '街路樹の葉が揺れる音', latitude: 35.6831, longitude: 139.7702, accuracy_m: 9, photo_path: null, recorded_at: new Date().toISOString() },
 ]
 
-function DemoMap() {
+const demoConsent: ConsentVersion = {
+  id: 'demo-consent-version',
+  version: 'DEMO-1.0',
+  title: 'まち歩き調査への参加同意',
+  body: 'このデモでは、入力したメールアドレス、プロジェクトコード、オノマトペ、説明、写真、位置情報はサーバーへ保存されません。\n\n本番版では、調査目的・保存期間・閲覧範囲・問い合わせ先を記載した正式な同意文を表示します。',
+  published_at: new Date().toISOString(),
+}
+
+function DemoExperience() {
+  const [stage, setStage] = useState<'auth' | 'consent' | 'map'>('auth')
+  const [email, setEmail] = useState('demo@humai.local')
+  const [projectCode, setProjectCode] = useState('')
   const [records, setRecords] = useState(demoRecords)
-  const session = { user: { id: 'demo-user', email: 'demo@humai.local' } } as Session
-  return <MapScreen session={session} acceptance={{ id: 'demo-consent', consent_version_id: 'demo', accepted_at: new Date().toISOString() }} membership={{ project_id: 'demo-project', projects: { name: 'HUMAI デモ' } }} records={records} onCreated={(record) => setRecords((current) => [record, ...current])} demoMode />
+  const session = { user: { id: 'demo-user', email } } as Session
+
+  if (stage === 'auth') {
+    return <AuthScreen demoMode onDemoAuthenticated={(nextEmail, nextProjectCode) => {
+      setEmail(nextEmail)
+      setProjectCode(nextProjectCode)
+      setStage('consent')
+    }} />
+  }
+  if (stage === 'consent') {
+    return <ConsentScreen consent={demoConsent} userId="demo-user" demoMode onAccepted={() => setStage('map')} />
+  }
+  return <MapScreen session={session} acceptance={{ id: 'demo-consent', consent_version_id: 'demo', accepted_at: new Date().toISOString() }} membership={projectCode ? { project_id: 'demo-project', projects: { name: `デモプロジェクト（${projectCode}）` } } : null} records={records} onCreated={(record) => setRecords((current) => [record, ...current])} demoMode />
 }
 
 async function compressImage(file: File): Promise<Blob> {

@@ -39,6 +39,8 @@ body { min-width: 320px; background: #dfe3df; }
 .auth-card { margin-top: auto; padding: 24px 20px 20px; border-radius: 24px; color: var(--ink); background: var(--surface); }
 .auth-card h2 { margin: 0 0 20px; font-size: 19px; }
 .card-copy { margin: -7px 0 20px; color: var(--muted); font-size: 11px; line-height: 1.7; }
+.demo-code { margin: -10px 0 16px; padding: 10px 12px; border-radius: 9px; color: #276e54; background: #e8f3ed; font-size: 11px; }
+.demo-code strong { letter-spacing: .12em; }
 .field { display: block; margin-top: 15px; }
 .field > span { display: flex; align-items: center; gap: 7px; margin-bottom: 7px; font-size: 11px; font-weight: 800; }
 .field em { padding: 2px 5px; border-radius: 4px; color: #737a75; background: #eceae4; font-size: 8px; font-style: normal; font-weight: 600; }

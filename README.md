@@ -17,7 +17,7 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Supabase未設定でも、`http://localhost:5173/?demo=1`で地図と記録操作を確認できます。デモで追加した記録はブラウザを再読み込みすると消えます。
+Supabase未設定でも、`http://localhost:5173/?demo=1`でアカウント登録、確認コード、同意、地図、記録の一連の操作を確認できます。デモの確認コードは`123456`です。入力内容はブラウザを再読み込みすると消えます。
 
 `.env.local`へSupabaseとMapTilerの公開キーを設定してください。
 
