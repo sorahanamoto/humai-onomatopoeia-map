@@ -317,8 +317,7 @@ function ConsentScreen({ consent, userId, onAccepted, demoMode = false }: {
     <main className="consent-page">
       <header className="simple-header"><Brand /></header>
       <section className="consent-content">
-        <p className="eyebrow accent">CONSENT · VERSION {consent.version}</p>
-        <h1>{consent.title}</h1>
+        <h1>調査への参加同意</h1>
         <div className="consent-document">
           {consent.body.split('\n').map((paragraph, index) => paragraph ? <p key={index}>{paragraph}</p> : <br key={index} />)}
         </div>
@@ -565,7 +564,7 @@ const demoRecords: OnomatopoeiaRecord[] = [
 const demoConsent: ConsentVersion = {
   id: 'demo-consent-version',
   version: 'DEMO-1.0',
-  title: 'まち歩き調査への参加同意',
+  title: '調査への参加同意',
   body: 'このデモでは、入力したメールアドレス、プロジェクトコード、オノマトペ、説明、写真、位置情報はサーバーへ保存されません。\n\n本番版では、調査目的・保存期間・閲覧範囲・問い合わせ先を記載した正式な同意文を表示します。',
   published_at: new Date().toISOString(),
 }
