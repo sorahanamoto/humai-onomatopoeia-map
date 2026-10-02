@@ -76,7 +76,7 @@ body { min-width: 320px; background: #dfe3df; }
 .map-page { height: 100svh; min-height: 550px; background: #e7e6df; }
 .map-header { position: absolute; z-index: 20; top: 0; left: 0; right: 0; height: calc(60px + env(safe-area-inset-top)); padding: calc(13px + env(safe-area-inset-top)) 16px 9px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(23,34,30,.1); background: rgba(255,254,250,.94); backdrop-filter: blur(12px); }
 .map-header > div:first-child { display: flex; align-items: center; gap: 10px; }
-.map-header strong { font-size: 16px; }
+.map-header strong { font-size: 14px; }
 .walk-chip { padding: 5px 8px; display: flex; align-items: center; gap: 5px; border-radius: 999px; color: #237858; background: #e1f1e8; font-size: 8px; font-weight: 700; }
 .walk-chip i { width: 5px; height: 5px; border-radius: 50%; background: #35a66f; }
 .menu-button { width: 38px; height: 38px; border: 0; background: transparent; font-size: 21px; cursor: pointer; }
@@ -105,7 +105,8 @@ body { min-width: 320px; background: #dfe3df; }
 .record-sheet > p { margin: 0; color: var(--muted); font-size: 10px; }
 .record-sheet h2 { margin: 3px 0 16px; font-family: inherit; font-size: 24px; }
 .onomatopoeia-input { height: 55px !important; font-family: inherit; font-size: 19px !important; font-weight: 800; }
-.photo-picker { min-height: 54px; margin-top: 16px; padding: 7px 12px; display: flex; align-items: center; justify-content: center; gap: 9px; border: 1px dashed #cbc8bf; border-radius: 11px; color: #626b65; font-size: 10px; cursor: pointer; overflow: hidden; }
+.photo-field { margin-top: 15px; }
+.photo-picker { min-height: 54px; padding: 7px 12px; display: flex; align-items: center; justify-content: center; gap: 9px; border: 1px dashed #cbc8bf; border-radius: 11px; color: #626b65; font-size: 10px; cursor: pointer; overflow: hidden; }
 .photo-picker input { position: absolute; width: 1px; height: 1px; overflow: hidden; opacity: 0; }
 .photo-picker img { width: 44px; height: 44px; border-radius: 8px; object-fit: cover; }
 

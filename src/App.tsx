@@ -374,7 +374,7 @@ function MapScreen({ session, acceptance, membership, records, onCreated, demoMo
   return (
     <main className="map-page">
       <header className="map-header">
-        <div><strong>まちの記録</strong><span className="walk-chip"><i />まち歩き中</span></div>
+        <div><strong>HUMAIオノマトペウォーク</strong><span className="walk-chip"><i />まち歩き中</span></div>
         <button className="menu-button" aria-label="メニュー" onClick={() => setMenuOpen((value) => !value)}>☰</button>
         {menuOpen && (
           <div className="account-menu">
@@ -429,12 +429,12 @@ function RecordSheet({ coordinates, userId, acceptanceId, projectId, onClose, on
   useEffect(() => () => { if (previewUrl) URL.revokeObjectURL(previewUrl) }, [previewUrl])
 
   async function save() {
-    if (!onomatopoeia.trim()) return
+    if (!onomatopoeia.trim() || !description.trim()) return
     if (demoMode) {
       onCreated({
         id: crypto.randomUUID(),
         onomatopoeia: onomatopoeia.trim(),
-        description: description.trim() || null,
+        description: description.trim(),
         latitude: coordinates.latitude,
         longitude: coordinates.longitude,
         accuracy_m: coordinates.accuracy,
@@ -470,7 +470,7 @@ function RecordSheet({ coordinates, userId, acceptanceId, projectId, onClose, on
         project_id: projectId,
         consent_acceptance_id: acceptanceId,
         onomatopoeia: onomatopoeia.trim(),
-        description: description.trim() || null,
+        description: description.trim(),
         latitude: coordinates.latitude,
         longitude: coordinates.longitude,
         accuracy_m: coordinates.accuracy,
@@ -495,28 +495,31 @@ function RecordSheet({ coordinates, userId, acceptanceId, projectId, onClose, on
       <section className="record-sheet" role="dialog" aria-modal="true" aria-labelledby="record-title">
         <div className="sheet-handle" />
         <button className="close-button" aria-label="閉じる" onClick={onClose}>×</button>
-        <p>この場所で感じた</p>
-        <h2 id="record-title">音のことばを記録</h2>
+        <p>HUMAIまち歩き</p>
+        <h2 id="record-title">オノマトペを記録</h2>
         <Field label="オノマトペ" required>
           <input
             className="onomatopoeia-input"
             autoFocus
             maxLength={28}
-            placeholder="たとえば… ざわざわ"
+            required
             value={onomatopoeia}
             onChange={(event) => setOnomatopoeia(event.target.value)}
           />
         </Field>
-        <Field label="説明" optional>
-          <textarea maxLength={500} rows={3} placeholder="この場所で感じたことを自由に書いてください" value={description} onChange={(event) => setDescription(event.target.value)} />
+        <Field label="説明" required>
+          <textarea required maxLength={500} rows={3} placeholder="この場所で感じたことを書いてください" value={description} onChange={(event) => setDescription(event.target.value)} />
         </Field>
-        <label className={previewUrl ? 'photo-picker has-preview' : 'photo-picker'}>
-          {previewUrl ? <img src={previewUrl} alt="選択した写真" /> : <span>▣</span>}
-          <strong>{photo ? '写真を変更' : '写真を追加'}</strong>
-          <input type="file" accept="image/jpeg,image/png,image/webp" capture="environment" onChange={(event) => setPhoto(event.target.files?.[0] ?? null)} />
-        </label>
+        <div className="field photo-field">
+          <span>写真<em>任意</em></span>
+          <label className={previewUrl ? 'photo-picker has-preview' : 'photo-picker'}>
+            {previewUrl ? <img src={previewUrl} alt="選択した写真" /> : <span>▣</span>}
+            <strong>{photo ? '写真を変更' : '写真を追加'}</strong>
+            <input type="file" accept="image/jpeg,image/png,image/webp" capture="environment" onChange={(event) => setPhoto(event.target.files?.[0] ?? null)} />
+          </label>
+        </div>
         {error && <p className="form-error" role="alert">{error}</p>}
-        <button className="primary-button" disabled={loading || !onomatopoeia.trim()} onClick={save}>
+        <button className="primary-button" disabled={loading || !onomatopoeia.trim() || !description.trim()} onClick={save}>
           {loading ? '保存中…' : '地図に記録する'}
         </button>
       </section>
