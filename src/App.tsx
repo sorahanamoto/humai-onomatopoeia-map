@@ -169,14 +169,14 @@ function AuthScreen({ demoMode = false, onDemoAuthenticated }: {
   }
 
   async function verifyOtp() {
-    if (otp.trim().length !== 6) return
+    if (otp.trim().length !== 8) return
     setLoading(true)
     setError('')
     if (demoMode) {
       await new Promise((resolve) => window.setTimeout(resolve, 350))
-      if (otp !== '123456') {
+      if (otp !== '12345678') {
         setLoading(false)
-        setError('デモの確認コードは 123456 です。')
+        setError('デモの確認コードは 12345678 です。')
         return
       }
       setLoading(false)
@@ -252,21 +252,21 @@ function AuthScreen({ demoMode = false, onDemoAuthenticated }: {
           <>
             <button className="text-button" onClick={() => setStage('email')}>← メールアドレスを変更</button>
             <h2>確認コードを入力</h2>
-            <p className="card-copy">{email} に届いた6桁のコードを入力してください。</p>
-            {demoMode && <p className="demo-code">デモ確認コード：<strong>123456</strong></p>}
+            <p className="card-copy">{email} に届いた8桁のコードを入力してください。</p>
+            {demoMode && <p className="demo-code">デモ確認コード：<strong>12345678</strong></p>}
             <Field label="確認コード">
               <input
                 className="otp-input"
                 inputMode="numeric"
                 autoComplete="one-time-code"
-                maxLength={6}
-                placeholder="000000"
+                maxLength={8}
+                placeholder="00000000"
                 value={otp}
                 onChange={(event) => setOtp(event.target.value.replace(/\D/g, ''))}
               />
             </Field>
             {error && <p className="form-error" role="alert">{error}</p>}
-            <button className="primary-button" disabled={loading || otp.length !== 6} onClick={verifyOtp}>
+            <button className="primary-button" disabled={loading || otp.length !== 8} onClick={verifyOtp}>
               {loading ? '確認中…' : '登録して次へ'}
             </button>
           </>
