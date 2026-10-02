@@ -216,8 +216,7 @@ function AuthScreen({ demoMode = false, onDemoAuthenticated }: {
     <main className="auth-page">
       <header><Brand /></header>
       <section className="auth-intro">
-        <p className="eyebrow">ONOMATOPOEIA FIELD NOTE</p>
-        <h1>HUMAI<br />オノマトペマップ</h1>
+        <h1>HUMAI<br />オノマトペ<br />ウォーク</h1>
       </section>
       <section className="auth-card">
         {stage === 'email' ? (
