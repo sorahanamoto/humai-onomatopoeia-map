@@ -348,6 +348,37 @@ function MapScreen({ session, acceptance, membership, records, onCreated, demoMo
   const [locationStatus, setLocationStatus] = useState<'loading' | 'ready' | 'error'>(demoMode ? 'ready' : 'loading')
   const [sheetOpen, setSheetOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [photoUrls, setPhotoUrls] = useState<Record<string, string>>({})
+
+  useEffect(() => {
+    if (demoMode || !supabase) {
+      setPhotoUrls({})
+      return
+    }
+
+    const photoRecords = records.filter(
+      (record): record is OnomatopoeiaRecord & { photo_path: string } => Boolean(record.photo_path),
+    )
+    if (photoRecords.length === 0) {
+      setPhotoUrls({})
+      return
+    }
+
+    let cancelled = false
+    void supabase.storage
+      .from('record-photos')
+      .createSignedUrls(photoRecords.map((record) => record.photo_path), 60 * 60)
+      .then(({ data }) => {
+        if (cancelled) return
+        const urls: Record<string, string> = {}
+        data?.forEach((result, index) => {
+          if (result.signedUrl) urls[photoRecords[index].id] = result.signedUrl
+        })
+        setPhotoUrls(urls)
+      })
+
+    return () => { cancelled = true }
+  }, [demoMode, records])
 
   const locate = useCallback(() => {
     if (!navigator.geolocation) {
@@ -382,7 +413,7 @@ function MapScreen({ session, acceptance, membership, records, onCreated, demoMo
           </div>
         )}
       </header>
-      <MapView coordinates={coordinates} records={records} />
+      <MapView coordinates={coordinates} records={records} photoUrls={photoUrls} />
       <button className="locate-button" aria-label="現在地を再取得" onClick={locate}>◎</button>
       <div className={`location-status status-${locationStatus}`}>
         {locationStatus === 'loading' && '現在地を取得中…'}

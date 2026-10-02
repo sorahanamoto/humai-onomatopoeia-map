@@ -8,6 +8,7 @@ import type { Coordinates, OnomatopoeiaRecord } from '../types'
 type Props = {
   coordinates: Coordinates | null
   records: OnomatopoeiaRecord[]
+  photoUrls: Record<string, string>
 }
 
 const mapTilerKey = import.meta.env.VITE_MAPTILER_KEY?.trim()
@@ -32,7 +33,7 @@ const mapStyle = mapTilerKey
   ? `https://api.maptiler.com/maps/streets-v2/style.json?key=${mapTilerKey}`
   : fallbackStyle
 
-export function MapView({ coordinates, records }: Props) {
+export function MapView({ coordinates, records, photoUrls }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<MapLibreMap | null>(null)
   const currentMarkerRef = useRef<Marker | null>(null)
@@ -84,6 +85,10 @@ export function MapView({ coordinates, records }: Props) {
 
     recordMarkersRef.current.forEach((marker) => marker.remove())
     recordMarkersRef.current = records.map((record) => {
+      const photoUrl = photoUrls[record.id]
+      const photoHtml = photoUrl
+        ? `<img class="record-popup-photo" src="${escapeHtml(photoUrl)}" alt="${escapeHtml(record.onomatopoeia)}の投稿写真" loading="lazy">`
+        : ''
       const element = document.createElement('button')
       element.className = 'onomatopoeia-marker'
       element.textContent = record.onomatopoeia
@@ -93,12 +98,12 @@ export function MapView({ coordinates, records }: Props) {
         .setLngLat([record.longitude, record.latitude])
         .setPopup(
           new maplibregl.Popup({ offset: 16 }).setHTML(
-            `<strong>${escapeHtml(record.onomatopoeia)}</strong>${record.description ? `<p>${escapeHtml(record.description)}</p>` : ''}`,
+            `${photoHtml}<strong>${escapeHtml(record.onomatopoeia)}</strong>${record.description ? `<p>${escapeHtml(record.description)}</p>` : ''}`,
           ),
         )
         .addTo(map)
     })
-  }, [records])
+  }, [photoUrls, records])
 
   return <div className="map" ref={containerRef} aria-label="オノマトペ記録地図" />
 }
