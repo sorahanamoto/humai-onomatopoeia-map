@@ -374,7 +374,7 @@ function MapScreen({ session, acceptance, membership, records, onCreated, demoMo
   return (
     <main className="map-page">
       <header className="map-header">
-        <div><strong>HUMAIオノマトペウォーク</strong><span className="walk-chip"><i />まち歩き中</span></div>
+        <div><strong>HUMAIオノマトペウォーク</strong></div>
         <button className="menu-button" aria-label="メニュー" onClick={() => setMenuOpen((value) => !value)}>☰</button>
         {menuOpen && (
           <div className="account-menu">

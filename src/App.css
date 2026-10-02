@@ -77,8 +77,6 @@ body { min-width: 320px; background: #dfe3df; }
 .map-header { position: absolute; z-index: 20; top: 0; left: 0; right: 0; height: calc(60px + env(safe-area-inset-top)); padding: calc(13px + env(safe-area-inset-top)) 16px 9px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(23,34,30,.1); background: rgba(255,254,250,.94); backdrop-filter: blur(12px); }
 .map-header > div:first-child { display: flex; align-items: center; gap: 10px; }
 .map-header strong { font-size: 14px; }
-.walk-chip { padding: 5px 8px; display: flex; align-items: center; gap: 5px; border-radius: 999px; color: #237858; background: #e1f1e8; font-size: 8px; font-weight: 700; }
-.walk-chip i { width: 5px; height: 5px; border-radius: 50%; background: #35a66f; }
 .menu-button { width: 38px; height: 38px; border: 0; background: transparent; font-size: 21px; cursor: pointer; }
 .account-menu { position: absolute; z-index: 30; top: calc(51px + env(safe-area-inset-top)); right: 12px; width: 225px; padding: 13px; display: grid; gap: 9px; border: 1px solid var(--line); border-radius: 12px; background: #fff; box-shadow: 0 12px 36px rgba(23,34,30,.16); }
 .account-menu small { overflow: hidden; color: var(--muted); text-overflow: ellipsis; }
