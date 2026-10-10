@@ -125,15 +125,6 @@ function App() {
   )
 }
 
-function Brand() {
-  return (
-    <div className="brand">
-      <span className="brand-mark">HU</span>
-      <span>HUMAI まち歩き</span>
-    </div>
-  )
-}
-
 function AuthScreen({ demoMode = false, onDemoAuthenticated }: {
   demoMode?: boolean
   onDemoAuthenticated?: (email: string, projectCode: string) => void
@@ -214,7 +205,6 @@ function AuthScreen({ demoMode = false, onDemoAuthenticated }: {
 
   return (
     <main className="auth-page">
-      <header><Brand /></header>
       <section className="auth-intro">
         <h1>HUMAI<br /><span>オノマトペウォーク</span></h1>
       </section>
@@ -315,7 +305,6 @@ function ConsentScreen({ consent, userId, onAccepted, demoMode = false }: {
 
   return (
     <main className="consent-page">
-      <header className="simple-header"><Brand /></header>
       <section className="consent-content">
         <h1>調査への参加同意</h1>
         <div className="consent-document">
@@ -571,19 +560,19 @@ function Field({ label, optional, required, children }: {
 }
 
 function LoadingScreen({ message }: { message: string }) {
-  return <main className="center-screen"><Brand /><span className="spinner" /><p>{message}</p></main>
+  return <main className="center-screen"><span className="spinner" /><p>{message}</p></main>
 }
 
 function ErrorScreen({ message, retry }: { message: string; retry: () => void }) {
-  return <main className="center-screen"><Brand /><h1>読み込みエラー</h1><p>{message}</p><button className="primary-button" onClick={retry}>もう一度試す</button></main>
+  return <main className="center-screen"><h1>読み込みエラー</h1><p>{message}</p><button className="primary-button" onClick={retry}>もう一度試す</button></main>
 }
 
 function ConsentMissing({ signOut }: { signOut: () => void }) {
-  return <main className="center-screen"><Brand /><h1>同意文を準備中です</h1><p>管理者が有効な同意文を登録すると利用できます。</p><button className="secondary-button" onClick={signOut}>ログアウト</button></main>
+  return <main className="center-screen"><h1>同意文を準備中です</h1><p>管理者が有効な同意文を登録すると利用できます。</p><button className="secondary-button" onClick={signOut}>ログアウト</button></main>
 }
 
 function SetupRequired() {
-  return <main className="center-screen"><Brand /><h1>セットアップが必要です</h1><p>Supabaseの環境変数を設定するとアプリを利用できます。</p><code>VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY</code><a className="demo-link" href="?demo=1">デモ画面を確認する</a></main>
+  return <main className="center-screen"><h1>セットアップが必要です</h1><p>Supabaseの環境変数を設定するとアプリを利用できます。</p><code>VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY</code><a className="demo-link" href="?demo=1">デモ画面を確認する</a></main>
 }
 
 const demoRecords: OnomatopoeiaRecord[] = [
